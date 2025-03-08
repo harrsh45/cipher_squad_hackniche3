@@ -1,5 +1,6 @@
 const contractConfig = {
-    contractAddress: "0xE5D10A1D0B0b57af7D0aC4d8257D46c7D3eBED29",
+    contractAddress: "0x5A703f00537541D82fc0C2e4A211C76e0eF32064",
+    
     contractAbi:[
         {
             "inputs": [],
@@ -18,6 +19,13 @@ const contractConfig = {
         {
             "inputs": [],
             "name": "pickWinner",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "resetLottery",
             "outputs": [],
             "stateMutability": "nonpayable",
             "type": "function"
@@ -132,6 +140,19 @@ const contractConfig = {
                     "internalType": "bool",
                     "name": "",
                     "type": "bool"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "winner",
+            "outputs": [
+                {
+                    "internalType": "address payable",
+                    "name": "",
+                    "type": "address"
                 }
             ],
             "stateMutability": "view",

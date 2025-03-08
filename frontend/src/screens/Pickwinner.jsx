@@ -61,6 +61,7 @@ function Pickwinner() {
     };
 
     loadBlockchainData();
+  
   }, []);
 
   const pickWinner = async () => {
@@ -75,6 +76,25 @@ function Pickwinner() {
       setWinnerDeclared(true);
     } catch (error) {
       console.error("Error picking winner:", error);
+    }
+  };
+  const claimPrize = async () => {
+    if (!contractInstance) return;
+    const tx = await contractInstance.claimPrize();
+    await tx.wait();
+  };
+  const resetLottery = async () => {
+    if (!contractInstance) return;
+    try {
+      const tx = await contractInstance.resetLottery();
+      await tx.wait();
+
+      setWinner("");
+      setStatus(false);
+      setWinnerDeclared(false);
+      console.log("Lottery reset successfully!");
+    } catch (error) {
+      console.error("Error resetting lottery:", error);
     }
   };
 
@@ -95,6 +115,12 @@ function Pickwinner() {
           winner.toLowerCase() === currentAccount.toLowerCase() ? (
             <div className="bg-green-500 p-4 rounded-lg shadow-md text-white text-center animate-pulse">
               🎉 Congratulations! You are the Winner: {winner}
+              <button
+                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                onClick={claimPrize}
+              >
+                Claim Prize
+              </button>
             </div>
           ) : (
             <div className="bg-red-500 p-4 rounded-lg shadow-md text-white text-center">
@@ -102,12 +128,21 @@ function Pickwinner() {
             </div>
           )
         ) : currentAccount === owner ? (
-          <button
-            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-            onClick={pickWinner}
-          >
-            Pick Winner
-          </button>
+          <div className="flex gap-3">
+            <button
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              onClick={pickWinner}
+            >
+              Pick Winner
+            </button>
+
+            <button
+              onClick={resetLottery}
+              className="bg-red-500 hover:bg-red-700 text-white font-bold p-2 rounded"
+            >
+              Reset Lottery
+            </button>
+          </div>
         ) : (
           <p className="text-lg">⏳ Waiting for result...</p>
         )}

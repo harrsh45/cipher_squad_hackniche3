@@ -103,17 +103,9 @@ function Home() {
 
       <div className="flex flex-col items-center">
         {status ? (
-          isWinner ? (
-            <button
-              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-              onClick={claimPrize}
-            >
-              Claim Prize
-            </button>
-          ) : (
-            <p className="text-lg">You are not the winner</p>
+         <p>Wait for the result ⌛ </p>
           )
-        ) : (
+         : (
           <button
             className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded"
             onClick={enterLottery}
