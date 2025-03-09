@@ -24,11 +24,9 @@ function Pickwinner() {
         const signer = await provider.getSigner();
         const address = await signer.getAddress();
         setCurrentAccount(address);
-        console.log("Connected Account:", address);
 
         window.ethereum.on("accountsChanged", (accounts) => {
           setCurrentAccount(accounts[0] || "");
-          console.log("Account changed:", accounts[0]);
           window.location.reload();
         });
 
@@ -47,21 +45,25 @@ function Pickwinner() {
         );
 
         setContractInstance(contract);
-        console.log("Contract Instance Loaded:", contract);
 
         const status = await contract.isComplete();
         setStatus(status);
 
         const contractOwner = await contract.getManager();
-        console.log("Contract Owner:", contractOwner);
         setOwner(contractOwner);
+
+        // Get winner if lottery is completed
+        if (status) {
+          const declaredWinner = await contract.getWinner();
+          setWinner(declaredWinner);
+          setWinnerDeclared(true);
+        }
       } catch (error) {
         console.error("Error initializing contract:", error);
       }
     };
 
     loadBlockchainData();
-  
   }, []);
 
   const pickWinner = async () => {
@@ -70,6 +72,7 @@ function Pickwinner() {
       const tx = await contractInstance.pickWinner();
       await tx.wait();
 
+      // Fetch the new winner after transaction confirmation
       const declaredWinner = await contractInstance.getWinner();
       setWinner(declaredWinner);
       setStatus(true);
@@ -78,11 +81,26 @@ function Pickwinner() {
       console.error("Error picking winner:", error);
     }
   };
+
   const claimPrize = async () => {
-    if (!contractInstance) return;
-    const tx = await contractInstance.claimPrize();
-    await tx.wait();
+    if (!contractInstance || currentAccount.toLowerCase() !== winner.toLowerCase()) {
+      alert("Only the winner can claim the prize!");
+      return;
+    }
+    try {
+      const tx = await contractInstance.claimPrize();
+      await tx.wait();
+      alert("Prize claimed successfully!");
+
+      // Reset lottery state after claiming
+      setWinner("");
+      setStatus(false);
+      setWinnerDeclared(false);
+    } catch (error) {
+      console.error("Error claiming prize:", error);
+    }
   };
+
   const resetLottery = async () => {
     if (!contractInstance) return;
     try {
@@ -92,31 +110,29 @@ function Pickwinner() {
       setWinner("");
       setStatus(false);
       setWinnerDeclared(false);
-      console.log("Lottery reset successfully!");
     } catch (error) {
       console.error("Error resetting lottery:", error);
     }
   };
 
   return (
-    <div className="max-w-5xl mx-auto p-4 pt-6 md:p-6 lg:p-8 mt-10 bg-gray-100 rounded-lg shadow-md">
+    <div className="home-back animated-gradient h-screen mx-auto p-4 pt-6 md:p-6 lg:p-8 rounded-lg shadow-md">
       <nav className="flex justify-between mb-4">
         <button
-          className="text-lg font-bold text-gray-600 hover:text-blue-500 transition duration-300"
+          className="text-lg font-bold text-white hover:text-black transition duration-300"
           onClick={() => navigate("/")}
         >
           Home
         </button>
       </nav>
-
-      <h1 className="text-3xl font-bold text-center mb-4">Pick Winner </h1>
+      <h1 className="text-3xl font-bold text-center mb-4">Pick Winner</h1>
       <div className="flex flex-col items-center">
         {winnerDeclared ? (
           winner.toLowerCase() === currentAccount.toLowerCase() ? (
             <div className="bg-green-500 p-4 rounded-lg shadow-md text-white text-center animate-pulse">
               🎉 Congratulations! You are the Winner: {winner}
               <button
-                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-2"
                 onClick={claimPrize}
               >
                 Claim Prize
@@ -135,7 +151,6 @@ function Pickwinner() {
             >
               Pick Winner
             </button>
-
             <button
               onClick={resetLottery}
               className="bg-red-500 hover:bg-red-700 text-white font-bold p-2 rounded"

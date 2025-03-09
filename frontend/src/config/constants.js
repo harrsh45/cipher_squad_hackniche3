@@ -1,5 +1,5 @@
 const contractConfig = {
-    contractAddress: "0x5A703f00537541D82fc0C2e4A211C76e0eF32064",
+    contractAddress: "0xB18CFaA2505D018a089E95eE557A70eB99434DEb",
     
     contractAbi:[
         {

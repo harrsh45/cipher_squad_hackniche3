@@ -7,3 +7,7 @@
 .animate-pulse {
   animation: pulse 2s infinite;
 }
+
+.home-back{
+  background-image: url('./assets/Roulette-NEWS.jpg');
+}

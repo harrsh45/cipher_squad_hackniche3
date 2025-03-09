@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { ethers, Contract } from "ethers"; 
+import { ethers, Contract } from "ethers";
 import contractConfig from "../config/constants";
 import { useNavigate } from "react-router-dom";
 
@@ -18,7 +18,7 @@ function Home() {
       }
 
       try {
-        const provider = new ethers.BrowserProvider(window.ethereum);  
+        const provider = new ethers.BrowserProvider(window.ethereum);
         const signer = await provider.getSigner();
         const address = await signer.getAddress();
         setCurrentAccount(address);
@@ -73,46 +73,51 @@ function Home() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto p-4 pt-6 md:p-6 lg:p-8 mt-10 bg-gray-100 rounded-lg shadow-md">
-      <nav className="flex justify-between mb-4">
-        <button
-          className="text-lg font-bold text-blue-500 hover:text-blue-700 transition duration-300"
-          onClick={() => navigate("/")}
-        >
-          Home
-        </button>
-        <button
-          className="text-lg font-bold text-gray-600 hover:text-blue-500 transition duration-300"
-          onClick={() => navigate("/pickwinner")}
-        >
-          Lottery Result
-        </button>
-      </nav>
-
-      <h1 className="text-3xl font-bold text-center mb-4">Lottery Page</h1>
-      <div className="flex flex-col items-center mb-4">
-        <p className="text-lg">Connected Account: {currentAccount}</p>
-      </div>
-
-      <div className="bg-blue-500 rounded-lg shadow-md p-4 mb-4 text-white">
-        <h2 className="text-lg font-bold mb-2">Lottery Ticket</h2>
-        <p className="text-md mb-2">Price: 0.001 ETH</p>
-        <p className="text-md mb-2">Pool: 0.02 ETH</p>
-        <p className="text-md mb-2">Result Date: 2024-03-15</p>
-      </div>
-
-      <div className="flex flex-col items-center">
-        {status ? (
-         <p>Wait for the result ⌛ </p>
-          )
-         : (
+    <div className=" w-full h-screen flex flex-col items-center justify-between gap-10">
+      <div className=" min-h-screen w-[100%]  mx-auto  md:p-6 lg:p-8  bg-gray-100 home-back rounded-lg shadow-md">
+        <nav className="flex justify-between mb-4">
           <button
-            className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded"
-            onClick={enterLottery}
+            className="text-2xl font-bold text-white hover:text-green-300 transition duration-300"
+            onClick={() => navigate("/")}
           >
-            Buy Lottery Ticket
+            Home
           </button>
-        )}
+          <button
+            className="text-2xl font-bold text-white hover:text-blue-500 transition duration-300"
+            onClick={() => navigate("/pickwinner")}
+          >
+            Lottery Result
+          </button>
+        </nav>
+
+        <h1 className="text-4xl font-bold text-center mb-28 animate-text-gradient bg-gradient-to-r from-yellow-300 via-white to-orange-300 bg-clip-text text-transparent drop-shadow-lg">
+  Lottery Page
+</h1>
+        <div className="flex flex-col items-center mb-10">
+          <p className="text-2xl font-bold text-white drop-shadow-lg">
+            Connected Account: {currentAccount}
+          </p>
+        </div>
+
+        <div className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 flex flex-col justify-center items-center w-[50%] ml-80 animate-gradient rounded-lg shadow-md p-4 mb-4 text-white">
+          <h2 className="text-lg font-bold mb-2">Lottery Ticket</h2>
+          <p className="text-md mb-2">Price: 0.001 ETH</p>
+          <p className="text-md mb-2">Pool: 0.02 ETH</p>
+          <p className="text-md mb-2">Result Date: 2024-03-15</p>
+        </div>
+
+        <div className="flex flex-col items-center">
+          {status ? (
+            <p>Wait for the result ⌛ </p>
+          ) : (
+            <button
+              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+              onClick={enterLottery}
+            >
+              Buy Lottery Ticket
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
